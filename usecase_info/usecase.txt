@@ -1,0 +1,23 @@
+Olympic Data Analysis
+
+Build a PySpark pipeline that:
+
+Reads the Olympics CSV.
+Applies an explicit schema.
+Checks null values.
+Checks duplicate records.
+Calculates total medals by country.
+Finds top 10 countries.
+Finds top 10 athletes.
+Calculates sport-wise medals.
+Calculates year-wise medals.
+Creates age groups.
+Calculates average age by sport.
+Ranks athletes using dense_rank().
+Finds top 3 athletes per sport.
+Uses lag() to calculate previous-year medals.
+Calculates medal growth.
+Calculates running medal totals.
+
+
+
