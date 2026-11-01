@@ -1,0 +1,59 @@
+{
+	"name": "covid_source",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "covid_data",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "target",
+						"type": "DatasetReference"
+					},
+					"name": "sinkcoviddata"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterRecovered"
+				},
+				{
+					"name": "selectwithoutdeaths"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Date as string,",
+				"          Country as string,",
+				"          Confirmed as string,",
+				"          Recovered as string,",
+				"          Deaths as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 filter(Recovered!='0') ~> filterRecovered",
+				"filterRecovered select(mapColumn(",
+				"          Date,",
+				"          Country,",
+				"          Confirmed,",
+				"          Recovered",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectwithoutdeaths",
+				"selectwithoutdeaths sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkcoviddata"
+			]
+		}
+	}
+}
