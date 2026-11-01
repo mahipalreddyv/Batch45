@@ -1,0 +1,77 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "covid_data",
+						"type": "DatasetReference"
+					},
+					"name": "BlobCovidCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "WriteBlobSilver"
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectColumns"
+				},
+				{
+					"name": "filterReCoveredCondition"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     parameter1 as string (@concat(Country, \"covid\"))",
+				"}",
+				"source(output(",
+				"          Date as string,",
+				"          Country as string,",
+				"          Confirmed as string,",
+				"          Recovered as string,",
+				"          Deaths as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     limit: 1,",
+				"     ignoreNoFilesFound: false,",
+				"     enableCdc: true,",
+				"     mode: 'read',",
+				"     skipInitialLoad: true,",
+				"     partitionBy('hash', 1)) ~> BlobCovidCSV",
+				"BlobCovidCSV select(mapColumn(",
+				"          Date,",
+				"          Country,",
+				"          Confirmed,",
+				"          Recovered",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectColumns",
+				"selectColumns filter(Recovered!='0') ~> filterReCoveredCondition",
+				"filterReCoveredCondition sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Date as string,",
+				"          Country as string,",
+				"          Confirmed as string,",
+				"          Recovered as string,",
+				"          Deaths as string",
+				"     ),",
+				"     filePattern:(concat('covid', toString(currentDate(), 'yyyyMMdd'))),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> WriteBlobSilver"
+			]
+		}
+	}
+}
