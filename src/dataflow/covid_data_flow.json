@@ -1,5 +1,5 @@
 {
-	"name": "covid_source",
+	"name": "covid_data_flow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
