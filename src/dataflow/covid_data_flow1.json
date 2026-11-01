@@ -1,0 +1,37 @@
+{
+	"name": "covid_data_flow1",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "BlobCovidCSV"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          Date as string,",
+				"          Country as string,",
+				"          Confirmed as string,",
+				"          Recovered as string,",
+				"          Deaths as string",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> BlobCovidCSV",
+				"BlobCovidCSV select(mapColumn(",
+				"          Date,",
+				"          Country,",
+				"          Confirmed,",
+				"          Recovered",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
+			]
+		}
+	}
+}
