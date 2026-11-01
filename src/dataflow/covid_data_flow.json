@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "covid_data",
+						"referenceName": "Parquet1",
 						"type": "DatasetReference"
 					},
 					"name": "WriteBlobSilver"
@@ -54,13 +54,7 @@
 				"selectColumns filter(Recovered!='0') ~> filterReCoveredCondition",
 				"filterReCoveredCondition sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          Date as string,",
-				"          Country as string,",
-				"          Confirmed as string,",
-				"          Recovered as string,",
-				"          Deaths as string",
-				"     ),",
+				"     format: 'parquet',",
 				"     filePattern:(concat('covid', toString(currentDate(), 'yyyyMMdd'))),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
