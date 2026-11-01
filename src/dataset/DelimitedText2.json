@@ -1,0 +1,95 @@
+{
+	"name": "DelimitedText2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "silverstorage"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "PAR1\u0015\u0002\u0019\\H\fspark_schema\u0015\b\u0000\u0015\f%\u0002\u0018\u0004Date%\u0000L\u001c\u0000\u0000\u0000\u0015\f%\u0002\u0018\u0007Country%\u0000L\u001c\u0000\u0000\u0000\u0015\f%\u0002\u0018\tConfirmed%\u0000L\u001c\u0000\u0000\u0000\u0015\f%\u0002\u0018\tRecovered%\u0000L\u001c\u0000\u0000\u0000\u0016\u0000\u0019\f\u0019",
+				"type": "String"
+			},
+			{
+				"name": "\u0018\u0018org.apache.spark.version\u0018\u00053.4.3\u0000\u0018)org.apache.spark.sql.parquet.row.metadata\u0018�\u0002{\"type\":\"struct\"",
+				"type": "String"
+			},
+			{
+				"name": "\"fields\":[{\"name\":\"Date\"",
+				"type": "String"
+			},
+			{
+				"name": "\"type\":\"string\"3",
+				"type": "String"
+			},
+			{
+				"name": "\"nullable\":true4",
+				"type": "String"
+			},
+			{
+				"name": "\"metadata\":{}}5",
+				"type": "String"
+			},
+			{
+				"name": "{\"name\":\"Country\"",
+				"type": "String"
+			},
+			{
+				"name": "\"type\":\"string\"7",
+				"type": "String"
+			},
+			{
+				"name": "\"nullable\":true8",
+				"type": "String"
+			},
+			{
+				"name": "\"metadata\":{}}9",
+				"type": "String"
+			},
+			{
+				"name": "{\"name\":\"Confirmed\"",
+				"type": "String"
+			},
+			{
+				"name": "\"type\":\"string\"11",
+				"type": "String"
+			},
+			{
+				"name": "\"nullable\":true12",
+				"type": "String"
+			},
+			{
+				"name": "\"metadata\":{}}13",
+				"type": "String"
+			},
+			{
+				"name": "{\"name\":\"Recovered\"",
+				"type": "String"
+			},
+			{
+				"name": "\"type\":\"string\"15",
+				"type": "String"
+			},
+			{
+				"name": "\"nullable\":true16",
+				"type": "String"
+			},
+			{
+				"name": "\"metadata\":{}}]}\u0000\u0018Jparquet-mr version 1.12.3 (build f8dced182c4c1fbdec6ccb3185537b5a01e6ed6b)\u0019L\u001c\u0000\u0000\u001c\u0000\u0000\u001c\u0000\u0000\u001c\u0000\u0000\u00009\u0002\u0000\u0000PAR1",
+				"type": "String"
+			}
+		]
+	}
+}
