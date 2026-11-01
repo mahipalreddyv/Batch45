@@ -161,6 +161,106 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "silverstorage"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "PAR1\u0015\u0002\u0019\\H\fspark_schema\u0015\b\u0000\u0015\f%\u0002\u0018\u0004Date%\u0000L\u001c\u0000\u0000\u0000\u0015\f%\u0002\u0018\u0007Country%\u0000L\u001c\u0000\u0000\u0000\u0015\f%\u0002\u0018\tConfirmed%\u0000L\u001c\u0000\u0000\u0000\u0015\f%\u0002\u0018\tRecovered%\u0000L\u001c\u0000\u0000\u0000\u0016\u0000\u0019\f\u0019",
+						"type": "String"
+					},
+					{
+						"name": "\u0018\u0018org.apache.spark.version\u0018\u00053.4.3\u0000\u0018)org.apache.spark.sql.parquet.row.metadata\u0018�\u0002{\"type\":\"struct\"",
+						"type": "String"
+					},
+					{
+						"name": "\"fields\":[{\"name\":\"Date\"",
+						"type": "String"
+					},
+					{
+						"name": "\"type\":\"string\"3",
+						"type": "String"
+					},
+					{
+						"name": "\"nullable\":true4",
+						"type": "String"
+					},
+					{
+						"name": "\"metadata\":{}}5",
+						"type": "String"
+					},
+					{
+						"name": "{\"name\":\"Country\"",
+						"type": "String"
+					},
+					{
+						"name": "\"type\":\"string\"7",
+						"type": "String"
+					},
+					{
+						"name": "\"nullable\":true8",
+						"type": "String"
+					},
+					{
+						"name": "\"metadata\":{}}9",
+						"type": "String"
+					},
+					{
+						"name": "{\"name\":\"Confirmed\"",
+						"type": "String"
+					},
+					{
+						"name": "\"type\":\"string\"11",
+						"type": "String"
+					},
+					{
+						"name": "\"nullable\":true12",
+						"type": "String"
+					},
+					{
+						"name": "\"metadata\":{}}13",
+						"type": "String"
+					},
+					{
+						"name": "{\"name\":\"Recovered\"",
+						"type": "String"
+					},
+					{
+						"name": "\"type\":\"string\"15",
+						"type": "String"
+					},
+					{
+						"name": "\"nullable\":true16",
+						"type": "String"
+					},
+					{
+						"name": "\"metadata\":{}}]}\u0000\u0018Jparquet-mr version 1.12.3 (build f8dced182c4c1fbdec6ccb3185537b5a01e6ed6b)\u0019L\u001c\u0000\u0000\u001c\u0000\u0000\u001c\u0000\u0000\u001c\u0000\u0000\u00009\u0002\u0000\u0000PAR1",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/covid_data')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -211,7 +311,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Parquet1')]",
+			"name": "[concat(parameters('factoryName'), '/target')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -220,13 +320,16 @@
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Parquet",
+				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"container": "silverstorage"
 					},
-					"compressionCodec": "snappy"
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -247,24 +350,24 @@
 								"referenceName": "covid_data",
 								"type": "DatasetReference"
 							},
-							"name": "BlobCovidCSV"
+							"name": "source1"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "Parquet1",
+								"referenceName": "target",
 								"type": "DatasetReference"
 							},
-							"name": "WriteBlobSilver"
+							"name": "sinkcoviddata"
 						}
 					],
 					"transformations": [
 						{
-							"name": "selectColumns"
+							"name": "filterRecovered"
 						},
 						{
-							"name": "filterReCoveredCondition"
+							"name": "selectwithoutdeaths"
 						}
 					],
 					"scriptLines": [
@@ -275,44 +378,38 @@
 						"          Recovered as string,",
 						"          Deaths as string",
 						"     ),",
-						"     allowSchemaDrift: false,",
+						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     limit: 1,",
-						"     ignoreNoFilesFound: false,",
-						"     partitionBy('hash', 1)) ~> BlobCovidCSV",
-						"BlobCovidCSV select(mapColumn(",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 filter(Recovered!='0') ~> filterRecovered",
+						"filterRecovered select(mapColumn(",
 						"          Date,",
 						"          Country,",
 						"          Confirmed,",
 						"          Recovered",
 						"     ),",
-						"     partitionBy('hash', 1),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> selectColumns",
-						"selectColumns filter(Recovered!='0') ~> filterReCoveredCondition",
-						"filterReCoveredCondition sink(allowSchemaDrift: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectwithoutdeaths",
+						"selectwithoutdeaths sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     filePattern:(concat('covid', toString(currentDate(), 'yyyyMMdd'))),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> WriteBlobSilver"
+						"     skipDuplicateMapOutputs: true) ~> sinkcoviddata"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/covid_data')]",
-				"[concat(variables('factoryId'), '/datasets/Parquet1')]"
+				"[concat(variables('factoryId'), '/datasets/target')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/covid_pipeline')]",
+			"name": "[concat(parameters('factoryName'), '/pipeline_covid')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "covid_dataFlow",
+						"name": "Data flow_covid",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -329,45 +426,8 @@
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"BlobCovidCSV": {},
-									"WriteBlobSilver": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "covid_dataFlow",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "covid_data_flow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"BlobCovidCSV": {},
-									"WriteBlobSilver": {}
+									"source1": {},
+									"sinkcoviddata": {}
 								}
 							},
 							"staging": {},
