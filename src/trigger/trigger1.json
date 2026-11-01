@@ -1,0 +1,24 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline_covid",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/rawstorage/blobs/covid",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/8a0fff55-5b8c-4610-a9cb-e8a63d179a1f/resourceGroups/storage_rg/providers/Microsoft.Storage/storageAccounts/iquizbatch45storage",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
