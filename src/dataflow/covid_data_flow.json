@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "covid_data",
 						"type": "DatasetReference"
 					},
 					"name": "WriteBlobSilver"
