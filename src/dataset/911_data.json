@@ -1,0 +1,61 @@
+{
+	"name": "911_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "911.csv",
+				"folderPath": "sampledir",
+				"container": "rawstorage"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "lat",
+				"type": "String"
+			},
+			{
+				"name": "lng",
+				"type": "String"
+			},
+			{
+				"name": "desc",
+				"type": "String"
+			},
+			{
+				"name": "zip",
+				"type": "String"
+			},
+			{
+				"name": "title",
+				"type": "String"
+			},
+			{
+				"name": "timeStamp",
+				"type": "String"
+			},
+			{
+				"name": "twp",
+				"type": "String"
+			},
+			{
+				"name": "addr",
+				"type": "String"
+			},
+			{
+				"name": "e",
+				"type": "String"
+			}
+		]
+	}
+}

@@ -1,0 +1,45 @@
+{
+	"name": "covid_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "covid_data.csv",
+				"folderPath": "sampledir",
+				"container": "rawstorage"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Country",
+				"type": "String"
+			},
+			{
+				"name": "Confirmed",
+				"type": "String"
+			},
+			{
+				"name": "Recovered",
+				"type": "String"
+			},
+			{
+				"name": "Deaths",
+				"type": "String"
+			}
+		]
+	}
+}
