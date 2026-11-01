@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "covid_data_flow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -30,9 +30,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     parameter1 as string (@concat(Country, \"covid\"))",
-				"}",
 				"source(output(",
 				"          Date as string,",
 				"          Country as string,",
