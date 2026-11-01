@@ -211,6 +211,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Parquet1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "silverstorage"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/covid_data_flow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -229,7 +253,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "covid_data",
+								"referenceName": "Parquet1",
 								"type": "DatasetReference"
 							},
 							"name": "WriteBlobSilver"
@@ -268,13 +292,7 @@
 						"selectColumns filter(Recovered!='0') ~> filterReCoveredCondition",
 						"filterReCoveredCondition sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     input(",
-						"          Date as string,",
-						"          Country as string,",
-						"          Confirmed as string,",
-						"          Recovered as string,",
-						"          Deaths as string",
-						"     ),",
+						"     format: 'parquet',",
 						"     filePattern:(concat('covid', toString(currentDate(), 'yyyyMMdd'))),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
@@ -283,7 +301,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/covid_data')]"
+				"[concat(variables('factoryId'), '/datasets/covid_data')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet1')]"
 			]
 		},
 		{
